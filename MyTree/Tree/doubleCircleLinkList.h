@@ -27,16 +27,16 @@ int doubleLinkListInit(LinkList** Dlist);
 int doubleLinkListAppointPosInsert(LinkList* list, int pos, ELEMENTTYPE val);
 
 /* 头插 */
-int double1LinkListTopInsert(LinkList* list, ELEMENTTYPE val);
+int doubleLinkListTopInsert(LinkList* list, ELEMENTTYPE val);
 
 /* 尾插 */
-int double1LinkListTailInsert(LinkList* list, ELEMENTTYPE val);
+int doubleLinkListTailInsert(LinkList* list, ELEMENTTYPE val);
 
 /* 头删 */
-int double1LinkListTopDel(LinkList* list);
+int doubleLinkListTopDel(LinkList* list);
 
 /* 尾删 */
-int double1LinkListTaiDel(LinkList* list);
+int doubleLinkListTailDel(LinkList* list);
 
 /* 毫无意义的获取链表长度函数 */
 int doubleLinkListGetLength(LinkList* list);

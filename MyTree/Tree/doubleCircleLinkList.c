@@ -67,13 +67,20 @@ int doubleLinkListAppointPosInsert(LinkList* list, int pos, ELEMENTTYPE val)
 
     LinkNode* tmp = NULL;
 
-    if(pos == 0)/* 头插 */
-    {
+    if(pos == 0 && list->len == 0)/* 当链表为空时头插 *//* ！！！！当节点数不为0时，头插会使插入后的节点1自身死循环 */
+    {   
         list->head->next = Node;
         Node->next = Node;
         Node->pre = Node;
     }
-    else if(pos!= 0  &&  pos == list->len)/* 尾插 */
+    else if(pos == 0 && list->len != 0)
+    {
+        Node->next = list->head->next;
+        Node->pre = list->head;
+        Node->next->pre = Node;
+        list->head->next = Node;
+    }
+    else if(list->len != 0 && pos == list->len)/* 尾插 */
     {
         tmp = list->head->next;
         Node->next = tmp;
@@ -83,9 +90,9 @@ int doubleLinkListAppointPosInsert(LinkList* list, int pos, ELEMENTTYPE val)
     }
     else/* 中间 */
     {
+        tmp = list->head->next;
         while(pos--)
         {
-            tmp = list->head->next;
             tmp = tmp->next;
         }
         
@@ -100,13 +107,13 @@ int doubleLinkListAppointPosInsert(LinkList* list, int pos, ELEMENTTYPE val)
 }
 
 /* 头插 */
-int double1LinkListTopInsert(LinkList* list, ELEMENTTYPE val)
+int doubleLinkListTopInsert(LinkList* list, ELEMENTTYPE val)
 {
     return doubleLinkListAppointPosInsert(list, 0, val);
 }
 
 /* 尾插 */
-int double1LinkListTailInsert(LinkList* list, ELEMENTTYPE val)
+int doubleLinkListTailInsert(LinkList* list, ELEMENTTYPE val)
 {
     return doubleLinkListAppointPosInsert(list, list->len, val);
 }
@@ -120,7 +127,7 @@ int doubleLinkListTopDel(LinkList* list)
 /* 尾删 */
 int doubleLinkListTailDel(LinkList* list)
 {
-    return doubleLinkListAppointPosDel(list, 0);
+    return doubleLinkListAppointPosDel(list, list->len);
 }
 
 /* 毫无意义的获取链表长度函数 */
@@ -144,8 +151,8 @@ int doubleLinkListApponitValPosGet(LinkList * list, ELEMENTTYPE val, int* pos, i
 
     int tmp = 1;
     LinkNode* Node = list->head->next;
-
-    while((list->len)--)
+    int idx = list->len;
+    while(idx--)
     {
 
         ret = compareFunc(val, Node->data);
@@ -164,6 +171,7 @@ int doubleLinkListApponitValPosGet(LinkList * list, ELEMENTTYPE val, int* pos, i
 
 /* 链表删除指定位置元素 */
 /* 通过pos来判断从头遍历还是从尾遍历 */
+#if 0
 int doubleLinkListAppointPosDel(LinkList* list, int pos)
 {
     int ret = 0;
@@ -206,6 +214,38 @@ int doubleLinkListAppointPosDel(LinkList* list, int pos)
     list->len--;
     return ret;
 }
+#endif
+
+int doubleLinkListAppointPosDel(LinkList* list, int pos)
+{
+    int ret = 0;
+    if(list == NULL)
+    {
+        return NULL_PTR;
+    }
+
+    if(pos <= 0 && pos > list->len)
+    {
+        return NULL_PTR;
+    }
+    LinkNode* tmpNode = list->head->next;
+
+    while (--pos)
+    {
+        tmpNode = tmpNode->next;
+    }
+    
+    tmpNode->pre->next = tmpNode->next;
+    tmpNode->next->pre = tmpNode->pre;
+    if(tmpNode != NULL)
+    {
+        free(tmpNode);
+    }
+
+    list->len--;
+    return ret;
+}
+
 
 /* 删除链表中指定元素 */
 int doubleLinkListAppointvalDel(LinkList* list, ELEMENTTYPE val, int (*compareFunc)(ELEMENTTYPE va1, ELEMENTTYPE val2))
@@ -218,8 +258,8 @@ int doubleLinkListAppointvalDel(LinkList* list, ELEMENTTYPE val, int (*compareFu
     }
     int pos = 1;
     LinkNode* node = list->head->next;
-
-    while((list->len)--)
+    int idx = list->len;
+    while(idx)
     {
         ret = compareFunc(val, node->data);
         node = node->next;
@@ -272,7 +312,9 @@ int doubleLinkListTopPrint(LinkList* list, int (*printFunc)(ELEMENTTYPE val))
     }
 
     LinkNode* tmp = list->head->next;
-    while((list->len)--)
+    int index = list->len;
+
+    while(index--)
     {
         printFunc(tmp->data);
         tmp = tmp->next;
@@ -289,14 +331,16 @@ int doubleLinkListTailPrint(LinkList* list, int (*printFunc)(ELEMENTTYPE val))
         return NULL_PTR;
     }
 
-    LinkNode* tmp = list->head->next;
-    while((list->len)--)
+    LinkNode* tmp = list->head->next->pre;
+    int idx = list->len;
+    while(idx--)
     {
         printFunc(tmp->data);
         tmp = tmp->pre;
     }
     return ret;
 }
+
 
 /* 打印指定位置元素 */
 int doubleLinkListAppointPosPrint(LinkList* list, int pos, int (*prinFunc)(ELEMENTTYPE val))

@@ -29,7 +29,19 @@ int main()
     LinkList * List = NULL;
     doubleLinkListInit(&List);
     demo Tao = {18, "wanrengmi"};
-    double1LinkListTopInsert(List, (void*)&Tao);
+    demo liang = {18, "wonanshen"};
+    demo gangge = {18, "gangshen"};
+    doubleLinkListTopInsert(List, (void*)&Tao);
+    doubleLinkListTopInsert(List, (void*)&liang);
+    doubleLinkListAppointPosInsert(List, 0, (void*)&gangge);/* 当节点数不为0时，头插会死循环 */
     doubleLinkListTopPrint(List, printLinkList);
+    //doubleLinkListTopDel(List);
+    //doubleLinkListTopDel(List);
+    //doubleLinkListTailDel(List);
+    //doubleLinkListTailPrint(List,printLinkList);
+    //doubleLinkListAppointPosDel(List, 2);
+    //doubleLinkListTopPrint(List, printLinkList);
+    //doubleLinkListTailPrint(List,printLinkList);
+    printf("%d\n", List->len);
     return 0;
 }
