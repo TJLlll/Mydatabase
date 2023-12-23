@@ -23,8 +23,6 @@ int printLinkList(void* val)
     printf("demo.age:%d, demo.str:%s\n", ((demo*)val)->age, ((demo*)val)->str);
 }
 
-/* 尾序遍历依旧有问题 */
-/* 指定位置删也很抽象 */
 int main()
 {
     LinkList * List = NULL;
