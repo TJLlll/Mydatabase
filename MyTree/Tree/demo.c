@@ -45,10 +45,10 @@ int main()
     //doubleLinkListTailDel(List);
     //doubleLinkListTailPrint(List,printLinkList);
     //doubleLinkListAppointPosDel(List, 1);
-    //doubleLinkListAppointPosDel(List, 1);/* 尾删依旧存在缺陷 */
+    //doubleLinkListAppointPosDel(List, 1);
     //doubleLinkListAppointPosDel(List, 4);
     doubleLinkListTopPrint(List, printLinkList);
-    //doubleLinkListTailPrint(List, printLinkList);/* 尾序遍历不能和尾删同时出现 */
+    //doubleLinkListTailPrint(List, printLinkList);
     printf("List->len:%d\n", List->len);
     return 0;
 }
