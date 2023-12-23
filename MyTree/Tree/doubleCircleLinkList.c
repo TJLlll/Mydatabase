@@ -73,11 +73,12 @@ int doubleLinkListAppointPosInsert(LinkList* list, int pos, ELEMENTTYPE val)
         Node->next = Node;
         Node->pre = Node;
     }
-    else if(pos == 0 && list->len != 0)
+    else if(pos == 0 && list->len != 0)/*  处理了非空时,头插插入元素的pre指向 *//* 容易疏忽 *//* 当链表中已有且仅有1个时， */
     {
         Node->next = list->head->next;
-        Node->pre = list->head;
+        Node->pre = list->head->next->pre;
         Node->next->pre = Node;
+        Node->pre->next = Node;
         list->head->next = Node;
     }
     else if(list->len != 0 && pos == list->len)/* 尾插 */
@@ -90,12 +91,20 @@ int doubleLinkListAppointPosInsert(LinkList* list, int pos, ELEMENTTYPE val)
     }
     else/* 中间 */
     {
+
+#if 0
         tmp = list->head->next;
+        while(--pos)
+        {
+            tmp = tmp->next;
+        }
+#else
+        tmp = list->head;
         while(pos--)
         {
             tmp = tmp->next;
         }
-        
+#endif
         Node->next = tmp->next;
         Node->pre = tmp;
         tmp->next->pre = Node;
@@ -169,9 +178,10 @@ int doubleLinkListApponitValPosGet(LinkList * list, ELEMENTTYPE val, int* pos, i
     return NOT_FIND;
 }
 
+
+#if 1
 /* 链表删除指定位置元素 */
 /* 通过pos来判断从头遍历还是从尾遍历 */
-#if 0
 int doubleLinkListAppointPosDel(LinkList* list, int pos)
 {
     int ret = 0;
@@ -179,42 +189,61 @@ int doubleLinkListAppointPosDel(LinkList* list, int pos)
     {
         return NULL_PTR;
     }
-    if(pos <= 0 && pos > list->len)
+    printf("pos:%d,len:%d\n", pos, list->len);
+    if(pos <= 0 || pos > list->len)
     {
+        printf("Del Faild ! NOT Such Pos!!!\n");
         return NOT_FIND;
     }
 
     LinkNode* Node = list->head->next;
-    int tmp = (pos >= (list->len - pos)) ? (list->len - pos) + 1 : pos;
-    int flag = (pos >= (list->len - pos)) ? 1 : 0;
+    int idx = (pos > (list->len - pos)) ? (list->len - pos) + 1 : pos;
+    int flag = (pos > (list->len - pos)) ? 1 : 0;
     
-    while(tmp--)
+    if (flag == 1)
     {
-        if(flag)
+        printf("idx:%d\n", idx);
+        printf("Tail Searching......\n");
+        //tmp -= 1;
+        while(idx--)
         {
-            /* 从尾遍历 */
-            Node = Node->pre;
+            Node = Node->pre;/* Node->pre不会一直指向它自身吧？ */
         }
-        else
+        printf("Searching Success!\n");
+    }
+    else
+    {
+        printf("idx:%d\n", idx);
+        printf("ToplFinding......\n");
+        if(idx = 1 && list->len > 1)/* ！！！当链表节点不只有一个时，头删需将head->next先后移，维护好头节点 */
         {
-            /* 从头遍历 */
+            LinkNode* tmpNode = list->head->next;
+            list->head->next = tmpNode->next; 
+        }
+        idx -= 1;
+        while(idx--)
+        {
             Node = Node->next;
         }
+        printf("Searching Success!\n");
     }
     
-    /* 将目标节点从链表中取出 */
+    
+    /* 将目标节点从链表中取出 *//* 适用于只有一个元素时 *//* 非空时头删会导致head->next指空 */
     Node->pre->next = Node->next;
     Node->next->pre = Node->pre; 
     
     if(Node != NULL)
     {
-        free(Node->data);
+        free(Node);
         Node = NULL;
     }
+    
     list->len--;
+    printf("DelSuccess!\n");
     return ret;
 }
-#endif
+#else
 
 int doubleLinkListAppointPosDel(LinkList* list, int pos)
 {
@@ -245,7 +274,7 @@ int doubleLinkListAppointPosDel(LinkList* list, int pos)
     list->len--;
     return ret;
 }
-
+#endif
 
 /* 删除链表中指定元素 */
 int doubleLinkListAppointvalDel(LinkList* list, ELEMENTTYPE val, int (*compareFunc)(ELEMENTTYPE va1, ELEMENTTYPE val2))
@@ -331,12 +360,19 @@ int doubleLinkListTailPrint(LinkList* list, int (*printFunc)(ELEMENTTYPE val))
         return NULL_PTR;
     }
 
-    LinkNode* tmp = list->head->next->pre;
+    LinkNode* tmp = list->head->next;
     int idx = list->len;
+    printf("idx:%d\n",idx);
     while(idx--)
     {
-        printFunc(tmp->data);
         tmp = tmp->pre;
+        if(tmp == NULL)
+        {
+            printf("!!!\n");
+        }
+        printf("ok?\n");
+        printFunc(tmp->data);
+        
     }
     return ret;
 }
