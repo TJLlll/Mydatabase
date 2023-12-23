@@ -189,7 +189,7 @@ int doubleLinkListAppointPosDel(LinkList* list, int pos)
     {
         return NULL_PTR;
     }
-    printf("pos:%d,len:%d\n", pos, list->len);
+
     if(pos <= 0 || pos > list->len)
     {
         printf("Del Faild ! NOT Such Pos!!!\n");
@@ -207,7 +207,7 @@ int doubleLinkListAppointPosDel(LinkList* list, int pos)
         //tmp -= 1;
         while(idx--)
         {
-            Node = Node->pre;/* Node->pre不会一直指向它自身吧？ */
+            Node = Node->pre;/* (Node->pre不会一直指向它自身吧？)已优化 */
         }
         printf("Searching Success!\n");
     }
@@ -229,7 +229,7 @@ int doubleLinkListAppointPosDel(LinkList* list, int pos)
     }
     
     
-    /* 将目标节点从链表中取出 *//* 适用于只有一个元素时 *//* 非空时头删会导致head->next指空 */
+    /* 将目标节点从链表中取出 *//* 适用于只有一个元素时 *//* (非空时头删会导致head->next指空)已修复 */
     Node->pre->next = Node->next;
     Node->next->pre = Node->pre; 
     
@@ -362,15 +362,10 @@ int doubleLinkListTailPrint(LinkList* list, int (*printFunc)(ELEMENTTYPE val))
 
     LinkNode* tmp = list->head->next;
     int idx = list->len;
-    printf("idx:%d\n",idx);
+
     while(idx--)
     {
         tmp = tmp->pre;
-        if(tmp == NULL)
-        {
-            printf("!!!\n");
-        }
-        printf("ok?\n");
         printFunc(tmp->data);
         
     }
