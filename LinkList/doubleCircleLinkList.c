@@ -217,7 +217,7 @@ int doubleLinkListAppointPosDel(LinkList* list, int pos)
         printf("ToplFinding......\n");
         if(idx = 1 && list->len > 1)/* ！！！当链表节点不只有一个时，头删需将head->next先后移，维护好头节点 */
         {
-            LinkNode* tmpNode = list->head->next;
+            LinkNode* tmpNode = list->head->next;/* 备份第一个节点 */
             list->head->next = tmpNode->next; 
         }
         idx -= 1;
