@@ -22,6 +22,13 @@ typedef struct HashList
     int tableSize;
 }HashList;
 
+/* 哈希表插入 */
+int hashInset(HashList* hashList, ElementType val);
+
+/* 哈希表查找 */
+HashNode* find(ElementType val, HashList* hashList);
+
+int hashListInit(HashList** hashList, int capcity);
 
 #endif  // __HashSep_H_
 
